@@ -24,4 +24,7 @@ int main(int ac, char *av[]) {
     pgm_linebuf[(c * PGM_W) / 256] = PGM_DEPTH;
     fwrite(pgm_linebuf, sizeof(pgm_linebuf), 1, pptr);
   }
+
+  fclose(pptr);
+  fclose(sptr);
 }
