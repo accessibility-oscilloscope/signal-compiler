@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define PGM_W 10      // PGM image height
-#define PGM_H 10      // PGM image width
+// note PGM_W / PGM_H ~ 16/10, resolution of wacom tablet
+#define PGM_W 300     // PGM image height
+#define PGM_H 480     // PGM image width
 #define PGM_DEPTH 255 // PGM maximum gray value
 
 #define STR_EXPAND(tok) #tok
@@ -18,10 +19,12 @@ int main(int ac, char *av[]) {
   const char *pgm_init = "P5 " STR(PGM_W) " " STR(PGM_H) " " STR(PGM_DEPTH) " ";
   fwrite(pgm_init, strlen(pgm_init), 1, pptr);
 
-  int c;
-  while ((c = fgetc(sptr)) != EOF) {
+  for (unsigned int ii = 0; ii < PGM_H; ii++) {
+    unsigned char c = fgetc(sptr);
+
     unsigned char pgm_linebuf[PGM_W] = {0};
     pgm_linebuf[(c * PGM_W) / 256] = PGM_DEPTH;
+
     fwrite(pgm_linebuf, sizeof(pgm_linebuf), 1, pptr);
   }
 
