@@ -1,4 +1,4 @@
-# signal-pgm
+# signal-compiler
 
 compile signal format to binary PGM.
 
