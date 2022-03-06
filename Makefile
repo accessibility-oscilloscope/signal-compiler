@@ -2,9 +2,10 @@ BIN = signal-compiler
 SRCS = $(wildcard *.c)
 
 CFLAGS += -Wall -Wextra -Werror -pedantic -std=c99
+LDFLAGS += -lm
 
 $(BIN): $(SRCS)
-	$(CC) $^ $(CFLAGS) -o $@
+	$(CC) $^ $(CFLAGS) $(LDFLAGS) -o $@
 
 .PHONY: clean
 clean:
