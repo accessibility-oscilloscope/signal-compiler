@@ -16,11 +16,12 @@
 #define STR_EXPAND(tok) #tok
 #define STR(tok) STR_EXPAND(tok)
 
+// magnitude of difference of two unsigned values
 unsigned udiff(unsigned a, unsigned b) {
   unsigned axb = a ^ b;
   if (a < b)
     axb = 0;
-  return (axb ^ b) - (axb ^ a); // a-b, or b-a
+  return (axb ^ b) - (axb ^ a);
 }
 
 int better_read(const int fd, void *buf, const int amount) {
@@ -83,7 +84,7 @@ int main(int ac, char *av[]) {
       write(pptr, &pgm_buf[ii][jj], 1);
     }
   }
-  printf("wrote %ld to pgm\n", sizeof(pgm_buf));
+  printf("wrote %zu to pgm\n", sizeof(pgm_buf));
 
   close(pptr);
   close(sptr);
