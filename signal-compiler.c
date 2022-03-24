@@ -45,8 +45,7 @@ int main(int ac, char *av[]) {
   if (pptr < 0)
     syslog(LOG_USER, "failed  to open %s\n", av[2]);
 
-  const char *pgm_init = "P5 " STR(PGM_W) " " STR(PGM_H) " " STR(PGM_DEPTH) " ";
-  write(pptr, pgm_init, strlen(pgm_init));
+
 
   uint8_t sbuf[PGM_W] = {0};
   uint8_t pgm_buf[PGM_W][PGM_H] = {0};
@@ -79,6 +78,8 @@ int main(int ac, char *av[]) {
     }
   }
 
+  const char *pgm_init = "P5 " STR(PGM_W) " " STR(PGM_H) " " STR(PGM_DEPTH) " ";
+  write(pptr, pgm_init, strlen(pgm_init));
   // - write(pptr, pgm_buf, PGM_H * PGM_W)
   // - write(pptr, pgm_buf[ii], PGM_H)
   // - write(pptr, &pgm_buf[ii][jj], 1)   <-- use this one (byte-order reasons)
