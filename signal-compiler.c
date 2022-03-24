@@ -45,8 +45,6 @@ int main(int ac, char *av[]) {
   if (pptr < 0)
     syslog(LOG_USER, "failed  to open %s\n", av[2]);
 
-
-
   uint8_t sbuf[PGM_W] = {0};
   uint8_t pgm_buf[PGM_W][PGM_H] = {0};
 
