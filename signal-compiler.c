@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 #include <unistd.h>
 
 // note PGM_H / PGM_W ~ 16/10, resolution of wacom tablet
@@ -35,9 +36,14 @@ int better_read(const int fd, void *buf, const int amount) {
 
 int main(int ac, char *av[]) {
   assert(ac == 3 && "usage: signal-ppm $SIGNAL $PPM");
+  openlog("signal-compiler", 0, LOG_USER);
 
   int sptr = open(av[1], O_RDONLY);
-  int pptr = open(av[2], O_WRONLY);
+  if (sptr < 0)
+    syslog(LOG_USER, "failed  to open %s\n", av[1]);
+  int pptr = open(av[2], O_WRONLY | O_CREAT, 0666);
+  if (pptr < 0)
+    syslog(LOG_USER, "failed  to open %s\n", av[2]);
 
   const char *pgm_init = "P5 " STR(PGM_W) " " STR(PGM_H) " " STR(PGM_DEPTH) " ";
   write(pptr, pgm_init, strlen(pgm_init));
@@ -46,9 +52,7 @@ int main(int ac, char *av[]) {
   uint8_t pgm_buf[PGM_W][PGM_H] = {0};
 
   const int rv = better_read(sptr, sbuf, sizeof(sbuf));
-  (void)rv; // FIXME
-
-  printf("read signal\n");
+  syslog(LOG_INFO, "read signal %d\n", rv);
 
   for (unsigned sx = 0; sx < PGM_W; sx++) {
     pgm_buf[sx][sbuf[sx]] = PGM_DEPTH;
@@ -56,7 +60,6 @@ int main(int ac, char *av[]) {
 
   for (unsigned sx = 0; sx < PGM_W; sx++) {
     const unsigned sy = sbuf[sx];
-    printf("%d %d\n", sx, sy);
 
     // fill in gradient in square around sampled point
     for (signed dx = -GRADIENT; dx <= GRADIENT; dx++) {
@@ -84,7 +87,7 @@ int main(int ac, char *av[]) {
       write(pptr, &pgm_buf[ii][jj], 1);
     }
   }
-  printf("wrote %zu to pgm\n", sizeof(pgm_buf));
+  syslog(LOG_INFO, "wrote PGM size %zu\n", sizeof(pgm_buf));
 
   close(pptr);
   close(sptr);
